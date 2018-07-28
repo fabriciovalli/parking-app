@@ -1,7 +1,6 @@
-import 'dart:math';
-
 import 'package:app4car/colors.dart';
 import 'package:app4car/utils/app4car.dart';
+import 'package:app4car/utils/app4car_navigator.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
@@ -16,25 +15,31 @@ class ParkingScreen extends StatefulWidget {
 class _ParkingScreenState extends State<ParkingScreen>
     with SingleTickerProviderStateMixin {
   double percentage = 0.0;
+  int stage = 1;
+  double finishXPosition;
+  double finishYPosition;
 
   @override
   void initState() {
     super.initState();
     percentage = 0.0;
+    stage = 1;
   }
 
-  Widget _buildParkedCars(BuildContext context) {
+  Widget _buildParkedCars() {
     final Size screenSize = MediaQuery.of(context).size;
     final double appBarSize = 180.0;
     final double paddingTop = 16.0;
 
     final Size topCarSize = Size(screenSize.width / 3,
         (screenSize.height - appBarSize - paddingTop) * 0.4);
-    topCarHeight = topCarSize.height;
     final Size parkingSpotSize = Size(screenSize.width / 3,
         (screenSize.height - appBarSize - paddingTop) * 0.45);
     final Size bottomCarSize = Size(screenSize.width / 3,
         (screenSize.height - appBarSize - paddingTop) * 0.15);
+
+    finishYPosition =
+        appBarSize + bottomCarSize.height + (parkingSpotSize.height / 2.0);
 
     return Container(
       width: topCarSize.width,
@@ -42,14 +47,12 @@ class _ParkingScreenState extends State<ParkingScreen>
       child: Column(
         children: <Widget>[
           Expanded(
-            child: new Container(
-              child: Image.asset(
+            child: Image.asset(
                 "assets/car-white.png",
                 width: parkingSpotSize.width,
-                fit: BoxFit.none,
+                fit: BoxFit.fitWidth,
                 alignment: Alignment(0.0, 1.0),
               ),
-            ),
           ),
           new SizedBox(
             height: 8.0,
@@ -63,10 +66,7 @@ class _ParkingScreenState extends State<ParkingScreen>
           new SizedBox(
             height: 8.0,
           ),
-          new Container(
-            height: topCarSize.height,
-            child: Image.asset("assets/car-white.png"),
-          ),
+          Image.asset("assets/car-white.png", height: topCarSize.height, fit: BoxFit.contain,),
         ],
       ),
     );
@@ -91,16 +91,18 @@ class _ParkingScreenState extends State<ParkingScreen>
             transform: Matrix4.translationValues(
                 0.0, -parkingCar.height * percentage, 0.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Image.asset(
-                  'assets/forward.png',
-                ),
-                SizedBox(width: 10.0),
-                Image.asset(
-                  'assets/car-orange.png',
-                ),
-              ]),
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Image.asset(
+                    'assets/forward.png',
+                  ),
+                  SizedBox(width: 10.0),
+                  Image.asset(
+                    'assets/car-orange.png',
+                    height: parkingCar.height,
+                    fit: BoxFit.contain,
+                  ),
+                ]),
           ),
         ],
       ),
@@ -131,7 +133,6 @@ class _ParkingScreenState extends State<ParkingScreen>
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Expanded(
-                flex: 1,
                 child: SliderMarks(
                     markCount: 60,
                     color: Color(0x55FFFFFF),
@@ -144,19 +145,19 @@ class _ParkingScreenState extends State<ParkingScreen>
             flex: 1,
             child: _buildParkingCar(context, percentage),
           ),
-          _buildParkedCars(context),
+          _buildParkedCars(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            if (percentage >= 1.15) {
-              percentage = 0.0;
-            } else {
-              percentage = percentage + 0.01;
-              print(percentage);
-            }
-          });
+          double newPercentage;
+          if (percentage >= 1.15) {
+            App4CarNavigator.goToParkingStepOne(context);
+          } else {
+            newPercentage = percentage + 0.03;
+            print(newPercentage);
+          }
+          setState(() => percentage = newPercentage);
         },
         child: Icon(
           Icons.play_arrow,
