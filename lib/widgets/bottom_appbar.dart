@@ -1,4 +1,4 @@
-import 'package:app4car/fonts_icons.dart';
+import 'package:app4car/utils/app4car.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
@@ -11,7 +11,7 @@ class CustomBottomAppBar extends StatelessWidget {
         children: <Widget>[
           new IconButton(
             icon: Icon(
-              Fonts.notifications,
+              App4Car.notificationsIcon,
               size: this.iconSize,
             ),
             onPressed: () {},
@@ -29,7 +29,7 @@ class CustomBottomAppBar extends StatelessWidget {
           Expanded(child: const SizedBox()),
           new IconButton(
             icon: Icon(
-              Fonts.diagnostic,
+              App4Car.diagnosticIcon,
               size: this.iconSize,
             ),
             onPressed: () {},
@@ -39,7 +39,7 @@ class CustomBottomAppBar extends StatelessWidget {
           ),
           new IconButton(
             icon: Icon(
-              Fonts.thief,
+              App4Car.thiefIcon,
               size: this.iconSize,
             ),
             onPressed: () {},

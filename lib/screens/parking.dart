@@ -1,12 +1,10 @@
 import 'package:app4car/colors.dart';
-import 'package:app4car/fonts_icons.dart';
 import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/utils/app4car_navigator.dart';
 import 'package:app4car/widgets/arc_stepper.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart' as vector;
 
 class ParkingScreen extends StatefulWidget {
   @override
@@ -154,7 +152,7 @@ class _ParkingScreenState extends State<ParkingScreen>
               _buildParkedCars(),
             ],
           ),
-          ArcStepper(1),
+          ArcStepper(stage),
         ],
       ),
       floatingActionButton: FloatingActionButton(
