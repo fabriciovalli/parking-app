@@ -5,7 +5,6 @@ import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'package:app4car/screens/parking/step_one.dart';
 
 class ParkingScreen extends StatefulWidget {
   @override
@@ -48,11 +47,11 @@ class _ParkingScreenState extends State<ParkingScreen>
         children: <Widget>[
           Expanded(
             child: Image.asset(
-                "assets/car-white.png",
-                width: parkingSpotSize.width,
-                fit: BoxFit.fitWidth,
-                alignment: Alignment(0.0, 1.0),
-              ),
+              "assets/car-white.png",
+              width: parkingSpotSize.width,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment(0.0, 1.0),
+            ),
           ),
           new SizedBox(
             height: 8.0,
@@ -66,7 +65,11 @@ class _ParkingScreenState extends State<ParkingScreen>
           new SizedBox(
             height: 8.0,
           ),
-          Image.asset("assets/car-white.png", height: topCarSize.height, fit: BoxFit.contain,),
+          Image.asset(
+            "assets/car-white.png",
+            height: topCarSize.height,
+            fit: BoxFit.contain,
+          ),
         ],
       ),
     );

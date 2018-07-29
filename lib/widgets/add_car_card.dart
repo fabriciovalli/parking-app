@@ -1,11 +1,7 @@
-import 'dart:async';
-
-import 'package:app4car/colors.dart';
 import 'package:app4car/models/car_data.dart';
 import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/utils/widget_utils.dart';
 import 'package:app4car/widgets/buttons.dart';
-import 'package:app4car/widgets/input_dropdown.dart';
 import 'package:flutter/material.dart';
 
 class AddCarCard extends StatefulWidget {
@@ -35,7 +31,6 @@ class _AddCarCardState extends State<AddCarCard> {
   String _selectedYear = App4Car.carYear;
   bool isExpanded = false;
   CarData _selectedCar = new CarData();
-  DateTime selectedDate = DateTime.now();
 
   Widget _buildHeader(BuildContext context) {
     return ListTile(
@@ -74,21 +69,6 @@ class _AddCarCardState extends State<AddCarCard> {
         },
       ),
     );
-  }
-
-  Future<Null> _selectYear(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDatePickerMode: DatePickerMode.year,
-        initialDate: selectedDate,
-        firstDate: new DateTime(2015, 8),
-        lastDate: new DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        _selectedCar.year = picked.year;
-      });
-    }
   }
 
   Widget _buildExpandedBody() {
