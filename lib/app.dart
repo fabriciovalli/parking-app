@@ -19,6 +19,7 @@ class _App4CarAppState extends State<App4CarApp> {
     // "/intro": (BuildContext context) => IntroScreen(),
     "/login": (BuildContext context) => LoginScreen(),
     "/home": (BuildContext context) => HomeScreen(),
+    // "/home": (BuildContext context) => ParkingSteps(),
     "/park": (BuildContext context) => ParkingScreen(),
     "/stepOne": (BuildContext context) => ParkingStepOneScreen(),
   };

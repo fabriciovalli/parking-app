@@ -1,10 +1,12 @@
 import 'package:app4car/colors.dart';
+import 'package:app4car/fonts_icons.dart';
 import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/utils/app4car_navigator.dart';
+import 'package:app4car/widgets/arc_stepper.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
-import 'package:vector_math/vector_math_64.dart';
+import 'package:vector_math/vector_math_64.dart' as vector;
 
 class ParkingScreen extends StatefulWidget {
   @override
@@ -128,27 +130,31 @@ class _ParkingScreenState extends State<ParkingScreen>
           ),
         ],
       ),
-      body: Row(
-//        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.max,
+      body: Stack(
         children: <Widget>[
-          Column(
+          Row(
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Expanded(
-                child: SliderMarks(
-                    markCount: 60,
-                    color: Color(0x55FFFFFF),
-                    paddingTop: 15.0,
-                    paddingBottom: 15.0),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(
+                    child: SliderMarks(
+                        markCount: 60,
+                        color: Color(0x55FFFFFF),
+                        paddingTop: 15.0,
+                        paddingBottom: 15.0),
+                  ),
+                ],
               ),
+              Expanded(
+                flex: 1,
+                child: _buildParkingCar(context, percentage),
+              ),
+              _buildParkedCars(),
             ],
           ),
-          Expanded(
-            flex: 1,
-            child: _buildParkingCar(context, percentage),
-          ),
-          _buildParkedCars(),
+          ArcStepper(1),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -163,7 +169,9 @@ class _ParkingScreenState extends State<ParkingScreen>
           setState(() => percentage = newPercentage);
         },
         child: Icon(
-          Icons.play_arrow,
+          App4Car.driveIcon,
+          color: Colors.white,
+          size: 35.0,
         ),
         backgroundColor: Theme.of(context).buttonColor,
       ),

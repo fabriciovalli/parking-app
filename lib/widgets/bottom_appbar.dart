@@ -1,3 +1,4 @@
+import 'package:app4car/fonts_icons.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
@@ -10,7 +11,7 @@ class CustomBottomAppBar extends StatelessWidget {
         children: <Widget>[
           new IconButton(
             icon: Icon(
-              Icons.notifications,
+              Fonts.notifications,
               size: this.iconSize,
             ),
             onPressed: () {},
@@ -28,7 +29,7 @@ class CustomBottomAppBar extends StatelessWidget {
           Expanded(child: const SizedBox()),
           new IconButton(
             icon: Icon(
-              Icons.build,
+              Fonts.diagnostic,
               size: this.iconSize,
             ),
             onPressed: () {},
@@ -38,7 +39,7 @@ class CustomBottomAppBar extends StatelessWidget {
           ),
           new IconButton(
             icon: Icon(
-              Icons.more_horiz,
+              Fonts.thief,
               size: this.iconSize,
             ),
             onPressed: () {},

@@ -35,6 +35,11 @@ flutter:
     - assets/wheel-left.png
     - assets/forward.png
     - assets/reverse.png
+    - assets/step-one.png
+    - assets/step-two.png
+    - assets/step-three.png
+    - assets/step-four.png
+    - assets/step-completed.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
@@ -61,3 +66,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.io/custom-fonts/#from-packages
+  fonts:
+    - family: Fonts
+      fonts:
+        - asset: fonts/Fonts.ttf
