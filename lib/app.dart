@@ -31,7 +31,7 @@ class _App4CarAppState extends State<App4CarApp> {
       theme: kDark4CarTheme.data,
       debugShowCheckedModeBanner: false,
       routes: _buildRoutes,
-      home: LoginScreen(),
+      home: ParkingSteps(),
     );
   }
 }

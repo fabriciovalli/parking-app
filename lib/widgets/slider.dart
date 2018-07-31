@@ -1,3 +1,4 @@
+import 'package:app4car/colors.dart';
 import 'package:flutter/material.dart';
 
 class SideSlider extends StatefulWidget {
@@ -27,13 +28,19 @@ class SliderMarks extends StatelessWidget {
   final double paddingTop;
   final double paddingBottom;
   final double position;
+  final double goalMarkPosition;
+  final double spotSize;
+  final Color spotColor;
 
   SliderMarks(
       {this.markCount,
       this.color,
       this.paddingTop,
       this.paddingBottom,
-      this.position = 0.0});
+      this.position = 0.0,
+      this.goalMarkPosition,
+      this.spotSize = 0.0,
+      this.spotColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +53,9 @@ class SliderMarks extends StatelessWidget {
         paddingBottom: paddingBottom,
         paddingLeft: 35.0,
         position: position,
+        goalMarkPosition: goalMarkPosition,
+        spotSize: spotSize,
+        spotColor: spotColor,
       ),
     );
   }
@@ -63,6 +73,8 @@ class SliderMarksPainter extends CustomPainter {
   final Paint markPaint;
   final double position;
   final double goalMarkPosition;
+  final double spotSize;
+  final Color spotColor;
 
   SliderMarksPainter(
       {this.markCount,
@@ -72,7 +84,9 @@ class SliderMarksPainter extends CustomPainter {
       this.paddingBottom,
       this.paddingLeft,
       this.position,
-      this.goalMarkPosition})
+      this.goalMarkPosition,
+      this.spotSize,
+      this.spotColor})
       : markPaint = new Paint()
           ..color = color
           ..strokeWidth = markThickness
@@ -84,25 +98,59 @@ class SliderMarksPainter extends CustomPainter {
     final paintHeight = size.height - paddingTop - paddingBottom;
     final gap = paintHeight / (markCount - 1);
 
+    // if (goalMarkPosition != null) {
+    //   markPaint.color = spotColor;
+    //   canvas.drawLine(
+    //       Offset(0.0 + paddingLeft - markWidth * 0.5, goalMarkPosition),
+    //       Offset(0.0 + paddingLeft + markWidth, goalMarkPosition),
+    //       markPaint);
+    // }
+
     for (int i = 0; i < markCount; i++) {
       final markY = i * gap + paddingTop;
+      double startingMarkX = 0.0 + paddingLeft;
 
-      canvas.drawLine(Offset(0.0 + paddingLeft, markY),
+      if (goalMarkPosition != null &&
+          markY <= (goalMarkPosition + spotSize) &&
+          markY >= (goalMarkPosition - spotSize)) {
+        markPaint.color = spotColor;
+      } else {
+        markPaint.color = color;
+      }
+      if (goalMarkPosition != null &&
+          markY < goalMarkPosition &&
+          (markY + gap) > goalMarkPosition) {
+        startingMarkX = 0.0 + paddingLeft - markWidth * 0.5;
+      }
+      canvas.drawLine(Offset(startingMarkX, markY),
           Offset(0.0 + paddingLeft + markWidth, markY), markPaint);
     }
 
     Paint positionPaint = new Paint()
-      ..color = Colors.deepOrangeAccent.withOpacity(0.9)
+      ..color = kApp4CarOrange.withOpacity(0.9)
       ..strokeWidth = 13.0
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     if (position != 0.0) {
+      if (goalMarkPosition != null &&
+          position < goalMarkPosition &&
+          (position + gap) > goalMarkPosition) {
+        positionPaint.color = kApp4CarGreen;
+      } else {
+        positionPaint.color = kApp4CarOrange;
+      }
+
       canvas.drawLine(Offset(0.0 + paddingLeft - markWidth * 0.2, position),
           Offset(0.0 + paddingLeft + markWidth, position), positionPaint);
-      positionPaint.color = Colors.deepOrangeAccent.withOpacity(1.0);
       canvas.drawCircle(Offset(0.0 + paddingLeft - markWidth * 0.5, position),
           6.0, positionPaint);
+
+      if (position < goalMarkPosition) {
+        // desenhar seta pra cima dentro do circulo do marcador
+      } else {
+        // desenhar seta pra baixo dentro do circulo do marcador
+      }
     }
   }
 

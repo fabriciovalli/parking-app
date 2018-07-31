@@ -20,7 +20,7 @@ class _ParkingCarState extends State<ParkingCar> {
     return Stack(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.only(top: paddingTop, bottom: 15.0),
+          padding: EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               final height = constraints.maxHeight;
@@ -34,11 +34,13 @@ class _ParkingCarState extends State<ParkingCar> {
                     children: <Widget>[
                       Expanded(
                         child: SliderMarks(
-                          markCount: 60,
+                          markCount: 80,
                           color: Color(0x55FFFFFF),
                           paddingTop: paddingTop,
                           paddingBottom: paddingBottom,
                           position: sliderY + height / 6,
+                          goalMarkPosition: height / 2.5,
+                          spotSize: height / 6,
                         ),
                       )
                     ],
