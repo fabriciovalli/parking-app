@@ -1,4 +1,5 @@
 import 'package:app4car/utils/app4car.dart';
+import 'package:app4car/utils/app4car_navigator.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
@@ -24,7 +25,9 @@ class CustomBottomAppBar extends StatelessWidget {
               Icons.location_on,
               size: this.iconSize,
             ),
-            onPressed: () {},
+            onPressed: () {
+              App4CarNavigator.goToParkingSlider(context);
+            },
           ),
           Expanded(child: const SizedBox()),
           new IconButton(

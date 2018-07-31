@@ -19,10 +19,10 @@ class _App4CarAppState extends State<App4CarApp> {
   var _buildRoutes = <String, WidgetBuilder>{
     // "/intro": (BuildContext context) => IntroScreen(),
     "/login": (BuildContext context) => LoginScreen(),
-    // "/home": (BuildContext context) => HomeScreen(),
-    "/home": (BuildContext context) => ParkingSteps(),
+    "/home": (BuildContext context) => HomeScreen(),
     "/park": (BuildContext context) => ParkingScreen(),
     "/stepOne": (BuildContext context) => ParkingStepOneScreen(),
+    "/slider": (BuildContext context) => ParkingSteps(),
   };
 
   @override
