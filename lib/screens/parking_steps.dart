@@ -13,6 +13,7 @@ class ParkingSteps extends StatefulWidget {
 class _ParkingStepsState extends State<ParkingSteps> {
   final double paddingTop = 15.0;
   final double paddingBottom = 15.0;
+  final double carSpeed = 0.015;
   double sliderPercent;
   int stage;
 
@@ -23,60 +24,48 @@ class _ParkingStepsState extends State<ParkingSteps> {
     super.initState();
   }
 
-  List<Widget> _buildContent() {
-    List<Widget> items = <Widget>[
-      _buildStack(),
-    ];
-    if (sliderPercent > 0.5) {
-      items.add(ArcStepper(stage));
-    }
-    return items;
-  }
-
-  Widget _buildStack() {
-    return Padding(
-      padding: EdgeInsets.only(top: paddingTop, bottom: paddingBottom),
-      child: LayoutBuilder(
-        builder: _builder,
-      ),
-    );
-  }
-
   Widget _builder(BuildContext context, BoxConstraints constraints) {
     final height = constraints.maxHeight;
+    final width = constraints.maxWidth;
     final sliderY = height * (1.0 - sliderPercent);
+    final Size parkingCarSize = Size(width / 3.2, height * 0.4);
 
-    return Stack(
-      children: <Widget>[
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: SliderMarks(
-                markCount: 80,
-                color: Color(0x55FFFFFF),
-                paddingTop: paddingTop,
-                paddingBottom: paddingBottom,
-                position: sliderY + height / 6,
-                goalMarkPosition: height / 2.5,
-                spotSize: height / 6,
-              ),
-            )
-          ],
-        ),
-        Positioned(
-          top: sliderY,
-          left: 150.0,
-          child: Center(
-            child: Image.asset(
-              'assets/car-orange.png',
-              height: height / 3,
-              fit: BoxFit.contain,
+    List<Widget> stack = <Widget>[
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: SliderMarks(
+              markCount: 80,
+              color: Color(0x55FFFFFF),
+              paddingTop: paddingTop,
+              paddingBottom: paddingBottom,
+              position: sliderY + height / 6,
+              goalMarkPosition: height / 2.5,
+              spotSize: height * 0.2,
             ),
-          ),
-        ),
-      ],
+          )
+        ],
+      ),
+      ParkingCar(
+        top: sliderY,
+        left: width / 4.2,
+        width: parkingCarSize.width,
+      ),
+    ];
+
+    if ((sliderY + height / 6) < height / 2.5 &&
+        (sliderY + height / 6) + height * (1.0 - carSpeed) > height / 2.5) {
+      stage = 2;
+    }
+
+    if (sliderPercent > 0.5) {
+      stack.add(ArcStepper(stage));
+    }
+    return Stack(
+      alignment: Alignment.center,
+      children: stack,
     );
   }
 
@@ -95,13 +84,13 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ),
         ],
       ),
-      body: Stack(
-        children: _buildContent(),
+      body: LayoutBuilder(
+        builder: _builder,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            sliderPercent += 0.03;
+            sliderPercent += carSpeed;
           });
         },
         child: Icon(
