@@ -1,12 +1,13 @@
-import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
 
 class ParkingCar extends StatelessWidget {
   final double top;
   final double left;
   final double width;
+  final bool isForward;
 
-  ParkingCar({@required this.top, this.left = 100.0, this.width});
+  ParkingCar(
+      {@required this.top, this.left = 100.0, this.width, this.isForward});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class ParkingCar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Image.asset(
-              'assets/forward.png',
+              isForward ? 'assets/forward.png' : 'assets/reverse.png',
             ),
             SizedBox(width: 10.0),
             Image.asset(

@@ -111,8 +111,8 @@ class SliderMarksPainter extends CustomPainter {
       double startingMarkX = 0.0 + paddingLeft;
 
       if (goalMarkPosition != null &&
-          markY <= (goalMarkPosition + spotSize) &&
-          markY >= (goalMarkPosition - spotSize)) {
+          markY <= (goalMarkPosition + spotSize / 2) &&
+          markY >= (goalMarkPosition - spotSize / 2)) {
         markPaint.color = spotColor;
       } else {
         markPaint.color = color;
