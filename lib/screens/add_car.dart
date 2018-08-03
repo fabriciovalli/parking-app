@@ -1,4 +1,5 @@
 import 'package:app4car/models/car_data.dart';
+import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/widgets/add_car_card.dart';
 import 'package:flutter/material.dart';
 
@@ -24,8 +25,8 @@ class _AddCarTabState extends State<AddCarTab> {
         child: Column(children: <Widget>[]),
       ),
       icon: Icon(
-        Icons.drive_eta,
-        size: 40.0,
+        App4Car.app4carIcon,
+        size: 30.0,
       ),
     ),
     new CarAddItem(
@@ -37,8 +38,8 @@ class _AddCarTabState extends State<AddCarTab> {
         child: Column(children: <Widget>[]),
       ),
       icon: Icon(
-        Icons.drive_eta,
-        size: 40.0,
+        App4Car.app4carIcon,
+        size: 30.0,
       ),
     ),
     new CarAddItem(
@@ -50,8 +51,8 @@ class _AddCarTabState extends State<AddCarTab> {
         child: Column(children: <Widget>[]),
       ),
       icon: Icon(
-        Icons.drive_eta,
-        size: 40.0,
+        App4Car.app4carIcon,
+        size: 30.0,
       ),
     ),
   ];

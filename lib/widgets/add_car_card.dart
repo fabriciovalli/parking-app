@@ -36,9 +36,9 @@ class _AddCarCardState extends State<AddCarCard> {
     return ListTile(
       leading: IconButton(
         padding: EdgeInsets.all(1.0),
-        iconSize: 40.0,
+        iconSize: 30.0,
         icon: Icon(
-          Icons.drive_eta,
+          App4Car.app4carIcon,
         ),
         onPressed: null,
       ),

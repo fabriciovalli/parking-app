@@ -55,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
             App4CarNavigator.goToParking(context);
           },
           child: Icon(
-            Icons.play_arrow,
+            App4Car.driveIcon,
+            color: Colors.white,
+            size: 35.0,
           ),
           backgroundColor: Theme.of(context).buttonColor,
         ),

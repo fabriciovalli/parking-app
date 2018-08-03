@@ -1,3 +1,5 @@
+import 'package:app4car/colors.dart';
+import 'package:app4car/utils/app4car.dart';
 import 'package:flutter/material.dart';
 
 class CarItem extends StatelessWidget {
@@ -9,11 +11,10 @@ class CarItem extends StatelessWidget {
       child: ListTile(
         leading: IconButton(
           padding: EdgeInsets.all(1.0),
-          iconSize: 40.0,
+          iconSize: 30.0,
           icon: Icon(
-            Icons.drive_eta,
+            App4Car.app4carIcon,
           ),
-          onPressed: () {},
         ),
         title: const Text(
           'Onix Advantage 1.4',
@@ -27,7 +28,8 @@ class CarItem extends StatelessWidget {
           padding: EdgeInsets.all(1.0),
           iconSize: 35.0,
           icon: Icon(
-            Icons.play_arrow,
+            App4Car.driveIcon,
+            color: kApp4CarOrange,
           ),
           onPressed: () {},
         ),
