@@ -9,12 +9,9 @@ class CarItem extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
       color: Theme.of(context).primaryColor,
       child: ListTile(
-        leading: IconButton(
-          padding: EdgeInsets.all(1.0),
-          iconSize: 30.0,
-          icon: Icon(
-            App4Car.app4carIcon,
-          ),
+        leading: Icon(
+          App4Car.app4carIcon,
+          size: 30.0,
         ),
         title: const Text(
           'Onix Advantage 1.4',
