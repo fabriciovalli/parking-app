@@ -55,7 +55,6 @@ class CustomBottomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new BottomAppBar(
-      hasNotch: false,
       color: Colors.white,
       child: Container(
         height: 70.0,

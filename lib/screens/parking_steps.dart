@@ -11,7 +11,7 @@ class ParkingSteps extends StatefulWidget {
   _ParkingStepsState createState() => new _ParkingStepsState();
 }
 
-class _ParkingStepsState extends State<ParkingSteps> {
+class _ParkingStepsState extends State<ParkingSteps> with TickerProviderStateMixin {
   final flexTopCar = 1;
   final flexSpot = 3;
   final flexBottomCar = 2;
@@ -24,12 +24,18 @@ class _ParkingStepsState extends State<ParkingSteps> {
   int stage;
   bool isMovingForward;
 
+  AnimationController _controller;
+  Animation _animation;
+
   @override
   void initState() {
+    super.initState();
+
     sliderPercent = 0.35;
     stage = 1;
     isMovingForward = true;
-    super.initState();
+
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
   }
 
   Widget _builder(BuildContext context, BoxConstraints constraints) {
@@ -40,16 +46,18 @@ class _ParkingStepsState extends State<ParkingSteps> {
     final Size parkingCarSize = Size(width / 3.2, height * 0.4);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4);
 
-    double goalPosition = height *
-        (flexTopCar + flexSpot / 2) *
-        (1 / (flexTopCar + flexSpot + flexBottomCar));
+    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
 
-    double spotSize =
-        height * (flexSpot / (flexTopCar + flexSpot + flexBottomCar));
+    double spotSize = height * (flexSpot / (flexTopCar + flexSpot + flexBottomCar));
 
     double sliderPosition = sliderY + parkingCarSize.height * 0.45;
 
     isMovingForward = (sliderPosition + carSpeed >= goalPosition);
+
+    _animation = Tween(begin: sliderY + parkingCarSize.height, end: goalPosition - parkingCarSize.height * .45).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.decelerate,
+    ));
 
     List<Widget> stack = <Widget>[
       Column(
@@ -69,11 +77,20 @@ class _ParkingStepsState extends State<ParkingSteps> {
           )
         ],
       ),
-      ParkingCar(
-        top: sliderY,
-        left: width / 4.2,
-        width: parkingCarSize.width,
-        isForward: isMovingForward,
+      AnimatedBuilder(
+        animation: _controller,
+        child: ParkingCar(
+          top: parkingCarSize.height + _animation.value,
+          left: width / 4.2,
+          width: parkingCarSize.width,
+          isForward: isMovingForward,
+        ),
+        builder: (BuildContext context, Widget child) {
+          return Transform(
+            transform: Matrix4.translationValues(width / 4.2, _animation.value - parkingCarSize.height, 0.0),
+            child: child,
+          );
+        },
       ),
       Positioned(
         right: 8.0,
@@ -98,9 +115,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
               child: new Container(
                 // height: parkingSpotSize.height,
                 width: parkingSpotSize.width,
-                decoration: BoxDecoration(
-                    border: Border.all(color: kApp4CarGreen, width: 2.0),
-                    borderRadius: BorderRadius.circular(10.0)),
+                decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
               ),
             ),
             new SizedBox(
@@ -118,10 +133,29 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ],
         ),
       ),
+      AnimatedBuilder(
+          animation: _controller,
+          builder: (_, __) {
+            return _animation.value < parkingCarSize.height * 1.3 ? ArcStepper(stage) : Container();
+          }),
+      //OVERLAY
+      // AnimatedBuilder(
+      //   animation: _controller,
+      //   builder: (BuildContext context, Widget child) {
+      //     return Transform(
+      //       transform: Matrix4.translationValues(0.0,
+      //           -height + _animation.value - parkingCarSize.height * .4, 0.0),
+      //       child: Container(
+      //         color: Colors.black87,
+      //         height: height,
+      //         // height: height + _animation.value,
+      //       ),
+      //     );
+      //   },
+      // ),
     ];
 
-    if (sliderPosition < goalPosition &&
-        sliderPosition + height * (1.0 - carSpeed) > goalPosition) {
+    if (sliderPosition < goalPosition && sliderPosition + height * (1.0 - carSpeed) > goalPosition) {
       stage = 2;
       stack.add(
         Positioned(
@@ -163,12 +197,13 @@ class _ParkingStepsState extends State<ParkingSteps> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            isMovingForward
-                ? carSpeed = carSpeed.abs()
-                : carSpeed = -carSpeed.abs();
-            sliderPercent += carSpeed;
-          });
+          // setState(() {
+          //   isMovingForward
+          //       ? carSpeed = carSpeed.abs()
+          //       : carSpeed = -carSpeed.abs();
+          //   sliderPercent += carSpeed;
+          // });
+          _controller.repeat();
         },
         child: Icon(
           App4Car.driveIcon,
@@ -180,6 +215,12 @@ class _ParkingStepsState extends State<ParkingSteps> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: CustomBottomAppBar(),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
 
@@ -199,9 +240,7 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(
-              text: fit ? 'cabe' : 'não cabe',
-              style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),
