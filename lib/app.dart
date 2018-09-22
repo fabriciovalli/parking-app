@@ -1,7 +1,10 @@
 import 'package:app4car/screens/home.dart';
 import 'package:app4car/screens/login.dart';
 import 'package:app4car/screens/parking.dart';
+import 'package:app4car/screens/parking/step_four.dart';
 import 'package:app4car/screens/parking/step_one.dart';
+import 'package:app4car/screens/parking/step_three.dart';
+import 'package:app4car/screens/parking/step_two.dart';
 import 'package:app4car/screens/parking_steps.dart';
 import 'package:flutter/material.dart';
 import 'themes.dart';
@@ -21,7 +24,10 @@ class _App4CarAppState extends State<App4CarApp> {
     "/login": (BuildContext context) => LoginScreen(),
     "/home": (BuildContext context) => HomeScreen(),
     "/park": (BuildContext context) => ParkingSteps(),
-    "/stepOne": (BuildContext context) => ParkingStepOneScreen(),
+    "/stepOne": (BuildContext context) => ParkingStepTwo(),
+    "/stepTwo": (BuildContext context) => ParkingStepTwo(),
+    "/stepThree": (BuildContext context) => ParkingStepThree(),
+    "/stepFour": (BuildContext context) => ParkingStepFour(),
     "/slider": (BuildContext context) => ParkingScreen(),
   };
 

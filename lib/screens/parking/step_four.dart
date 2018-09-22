@@ -6,16 +6,15 @@ import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/services.dart';
 
-class ParkingStepTwo extends StatefulWidget {
+class ParkingStepFour extends StatefulWidget {
   @override
-  _ParkingStepTwoState createState() => new _ParkingStepTwoState();
+  _ParkingStepFourState createState() => new _ParkingStepFourState();
 }
 
-class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStateMixin {
+class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderStateMixin {
   final flexTopCar = 3;
   final flexSpot = 3;
   final flexBottomCar = 1;
@@ -29,8 +28,6 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
   bool isMovingForward = false;
 
   AnimationController _controller;
-  Animation<double> _rotate;
-  Animation<double> _left;
   Animation<double> _top;
 
   @override
@@ -38,9 +35,9 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
     super.initState();
 
     sliderPercent = 0.35;
-    stage = 1;
+    stage = 4;
 
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
   }
 
   Widget _builder(BuildContext context, BoxConstraints constraints) {
@@ -56,25 +53,22 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
     double sliderPosition = sliderY + parkingCarSize.height * 0.45;
 
     _top = Tween(
-      begin: MediaQuery.of(context).size.height - height - parkingCarSize.height * .62,
-      end: goalPosition - parkingCarSize.height * .62,
+      begin: goalPosition - parkingCarSize.height * .4,
+      end: goalPosition - parkingCarSize.height * .45,
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.linear,
     ));
 
-    _rotate = Tween(begin: .0, end: 32.0).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn, //Interval(0.1, 1.0),
-    ));
+    // _rotate = Tween(begin: 32.0, end: .0).animate(CurvedAnimation(
+    //   parent: _controller,
+    //   curve: Curves.linear,
+    // ));
 
-    _left = Tween(
-      begin: width - 2 * parkingCarSize.width * 1.3,
-      end: width - 2 * parkingCarSize.width,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    ));
+    // _left = Tween(begin: width / 4.5, end: parkingSpotSize.width / 10).animate(CurvedAnimation(
+    //   parent: _controller,
+    //   curve: Curves.linear,
+    // ));
 
     List<Widget> stack = <Widget>[
       Column(
@@ -98,18 +92,14 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
         animation: _controller,
         child: ParkingCar(
           top: 0.0,
-          left: _top.value,
+          left: width / 4.2,
           width: parkingCarSize.width,
-          isForward: false,
         ),
         builder: (BuildContext context, Widget child) {
           return Positioned(
-            left: _left.value,
+            left: width - parkingCarSize.width - 8,
             top: _top.value,
-            child: RotationTransition(
-              turns: AlwaysStoppedAnimation(-_rotate.value / 360),
-              child: child,
-            ),
+            child: child,
           );
         },
       ),
@@ -135,15 +125,10 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
               ),
               Expanded(
                 flex: flexSpot,
-                child: Transform(
-                  transform: Matrix4.identity()
-                    ..translate(-140.0, 10.0)
-                    ..rotateZ(-2 * math.pi / 11),
-                  child: new Container(
-                    height: parkingSpotSize.height * .5,
-                    width: parkingSpotSize.width,
-                    decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
-                  ),
+                child: Container(
+                  height: parkingSpotSize.height * .5,
+                  width: parkingSpotSize.width,
+                  decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
                 ),
               ),
               new SizedBox(
@@ -195,12 +180,6 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // setState(() {
-          //   isMovingForward
-          //       ? carSpeed = carSpeed.abs()
-          //       : carSpeed = -carSpeed.abs();
-          //   sliderPercent += carSpeed;
-          // });
           if (_controller.status == AnimationStatus.forward || _controller.status == AnimationStatus.completed) {
             _controller.reset();
           } else {

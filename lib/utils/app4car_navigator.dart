@@ -21,6 +21,18 @@ class App4CarNavigator {
     Navigator.pushNamed(context, "/stepOne");
   }
 
+  static void goToParkingStepTwo(BuildContext context) {
+    Navigator.pushNamed(context, "/stepTwo");
+  }
+
+  static void goToParkingStepThree(BuildContext context) {
+    Navigator.pushNamed(context, "/stepThree");
+  }
+
+  static void goToParkingStepFour(BuildContext context) {
+    Navigator.pushNamed(context, "/stepFour");
+  }
+
   static void goToParkingSlider(BuildContext context) {
     Navigator.pushNamed(context, "/slider");
   }

@@ -8,8 +8,6 @@ class ParkedCars extends StatelessWidget {
 }
 
 class ImagePainter extends CustomPainter {
-  final Image image;
-
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
