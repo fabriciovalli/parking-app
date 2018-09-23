@@ -39,6 +39,7 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
     stage = 3;
 
     _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
+    _controller.forward();
   }
 
   Widget _builder(BuildContext context, BoxConstraints constraints) {
@@ -171,39 +172,8 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(App4Car.appName),
-        centerTitle: true,
-        elevation: 5.0,
-        automaticallyImplyLeading: true,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.menu),
-          ),
-        ],
-      ),
-      body: LayoutBuilder(
-        builder: _builder,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (_controller.status == AnimationStatus.forward || _controller.status == AnimationStatus.completed) {
-            _controller.reset();
-          } else {
-            _controller.forward();
-          }
-        },
-        child: Icon(
-          App4Car.driveIcon,
-          color: Colors.white,
-          size: 35.0,
-        ),
-        backgroundColor: Theme.of(context).buttonColor,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomAppBar(),
+    return LayoutBuilder(
+      builder: _builder,
     );
   }
 
