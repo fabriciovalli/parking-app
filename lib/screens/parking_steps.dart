@@ -41,7 +41,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
     ControllerData data = controllerDataFromJson(message);
     setState(() {
       _data = data;
-      stage = int.parse(_data.passo);
+      // stage = int.parse(_data.passo);
     });
   }
 
@@ -50,7 +50,9 @@ class _ParkingStepsState extends State<ParkingSteps> {
     Widget stepToRender;
     switch (stage) {
       case 1:
-        stepToRender = ParkingStepOne();
+        stepToRender = ParkingStepOne(
+          communicationController: controller,
+        );
         break;
       case 2:
         stepToRender = ParkingStepTwo();

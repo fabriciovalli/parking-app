@@ -1,12 +1,19 @@
 import 'package:app4car/colors.dart';
+import 'package:app4car/models/controller_data.dart';
 import 'package:app4car/screens/parking/parking_car.dart';
 import 'package:app4car/utils/app4car.dart';
+import 'package:app4car/utils/car_communication.dart';
 import 'package:app4car/widgets/arc_stepper.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
+import 'package:app4car/widgets/percent_indicator.dart';
 import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
 
 class ParkingStepOne extends StatefulWidget {
+  final CarCommunication communicationController;
+
+  const ParkingStepOne({Key key, this.communicationController}) : super(key: key);
+
   @override
   _ParkingStepOneState createState() => new _ParkingStepOneState();
 }
@@ -26,6 +33,7 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
 
   AnimationController _controller;
   Animation _animation;
+  ControllerData _data;
 
   @override
   void initState() {
@@ -37,6 +45,17 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
 
     _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
     _controller.repeat();
+
+    widget.communicationController.addListener(_onMessageReceived);
+  }
+
+  _onMessageReceived(message) {
+    ControllerData data = controllerDataFromJson(message);
+    setState(() {
+      _data = data;
+      sliderPercent = double.parse(data.progresso) / 100;
+      // stage = int.parse(_data.passo);
+    });
   }
 
   Widget _builder(BuildContext context, BoxConstraints constraints) {
@@ -63,18 +82,27 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
     List<Widget> stack = <Widget>[
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Expanded(
-            child: SliderMarks(
-              markCount: 80,
-              color: Color(0x55FFFFFF),
-              paddingTop: paddingTop,
-              paddingBottom: paddingBottom,
-              position: sliderPosition,
-              goalMarkPosition: goalPosition, // 2.5,
-              spotSize: spotSize, //0.4,
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: LinearPercentIndicator(
+              height: height * .8,
+              lineWidth: 40.0,
+              percent: sliderPercent,
+              linearStrokeCap: LinearStrokeCap.butt,
+              progressColor: kApp4CarGreen,
             ),
+            // child: SliderMarks(
+            //   markCount: 80,
+            //   color: Color(0x55FFFFFF),
+            //   paddingTop: paddingTop,
+            //   paddingBottom: paddingBottom,
+            //   position: sliderPosition,
+            //   goalMarkPosition: goalPosition, // 2.5,
+            //   spotSize: spotSize, //0.4,
+            // ),
           )
         ],
       ),
@@ -188,6 +216,7 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
   @override
   void dispose() {
     _controller.dispose();
+    widget.communicationController.removeListener(_onMessageReceived);
     super.dispose();
   }
 }
