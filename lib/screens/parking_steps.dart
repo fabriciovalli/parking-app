@@ -1,150 +1,82 @@
 import 'package:app4car/colors.dart';
-import 'package:app4car/screens/parking/parking_car.dart';
+import 'package:app4car/models/car_data.dart';
+import 'package:app4car/models/controller_data.dart';
+import 'package:app4car/screens/parking/step_four.dart';
+import 'package:app4car/screens/parking/step_one.dart';
+import 'package:app4car/screens/parking/step_three.dart';
+import 'package:app4car/screens/parking/step_two.dart';
 import 'package:app4car/utils/app4car.dart';
-import 'package:app4car/widgets/arc_stepper.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
-import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
+import 'package:app4car/utils/car_communication.dart';
+import 'package:flutter/services.dart';
 
 class ParkingSteps extends StatefulWidget {
+  final CarData carData;
+
+  const ParkingSteps({Key key, this.carData}) : super(key: key);
+
   @override
   _ParkingStepsState createState() => new _ParkingStepsState();
 }
 
 class _ParkingStepsState extends State<ParkingSteps> {
-  final flexTopCar = 1;
-  final flexSpot = 3;
-  final flexBottomCar = 2;
-
-  final double paddingTop = 15.0;
-  final double paddingBottom = 15.0;
-
-  double carSpeed = 0.015;
-  double sliderPercent;
   int stage;
-  bool isMovingForward;
-
+  ControllerData _data;
+  CarCommunication controller = CarCommunication();
   @override
   void initState() {
-    sliderPercent = 0.35;
-    stage = 1;
-    isMovingForward = true;
     super.initState();
+    controller.addListener(_onMessageReceived);
+    controller.send(widget.carData);
+    stage = 1;
   }
 
-  Widget _builder(BuildContext context, BoxConstraints constraints) {
-    final height = constraints.maxHeight;
-    final width = constraints.maxWidth;
-    final sliderY = height * (1.0 - sliderPercent);
+  @override
+  void dispose() {
+    controller.removeListener(_onMessageReceived);
+    super.dispose();
+  }
 
-    final Size parkingCarSize = Size(width / 3.2, height * 0.4);
-    final Size parkingSpotSize = Size(width / 3.2, height * 0.4);
-
-    double goalPosition = height *
-        (flexTopCar + flexSpot / 2) *
-        (1 / (flexTopCar + flexSpot + flexBottomCar));
-
-    double spotSize =
-        height * (flexSpot / (flexTopCar + flexSpot + flexBottomCar));
-
-    double sliderPosition = sliderY + parkingCarSize.height * 0.45;
-
-    isMovingForward = (sliderPosition + carSpeed >= goalPosition);
-
-    List<Widget> stack = <Widget>[
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Expanded(
-            child: SliderMarks(
-              markCount: 80,
-              color: Color(0x55FFFFFF),
-              paddingTop: paddingTop,
-              paddingBottom: paddingBottom,
-              position: sliderPosition,
-              goalMarkPosition: goalPosition, // 2.5,
-              spotSize: spotSize, //0.4,
-            ),
-          )
-        ],
-      ),
-      ParkingCar(
-        top: sliderY,
-        left: width / 4.2,
-        width: parkingCarSize.width,
-        isForward: isMovingForward,
-      ),
-      Positioned(
-        right: 8.0,
-        height: height,
-        width: parkingCarSize.width,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: flexTopCar,
-              child: Image.asset(
-                "assets/car-white.png",
-                width: parkingCarSize.width,
-                fit: BoxFit.fitWidth,
-                alignment: Alignment(0.0, 1.0),
-              ),
-            ),
-            new SizedBox(
-              height: 8.0,
-            ),
-            Expanded(
-              flex: flexSpot,
-              child: new Container(
-                // height: parkingSpotSize.height,
-                width: parkingSpotSize.width,
-                decoration: BoxDecoration(
-                    border: Border.all(color: kApp4CarGreen, width: 2.0),
-                    borderRadius: BorderRadius.circular(10.0)),
-              ),
-            ),
-            new SizedBox(
-              height: 8.0,
-            ),
-            Expanded(
-              flex: flexBottomCar,
-              child: Image.asset(
-                "assets/car-white.png",
-                width: parkingCarSize.width,
-                fit: BoxFit.fitWidth,
-                alignment: Alignment(0.0, -1.0),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ];
-
-    if (sliderPosition < goalPosition &&
-        sliderPosition + height * (1.0 - carSpeed) > goalPosition) {
-      stage = 2;
-      stack.add(
-        Positioned(
-          top: height * 0.75,
-          child: Container(
-            width: parkingCarSize.width * 0.8,
-            child: ResultadoVaga(true),
-          ),
-        ),
-      );
-    }
-
-    if (sliderPercent > 0.5) {
-      stack.add(ArcStepper(stage));
-    }
-    return Stack(
-      alignment: Alignment.center,
-      children: stack,
-    );
+  _onMessageReceived(message) {
+    ControllerData data = controllerDataFromJson(message);
+    setState(() {
+      _data = data;
+      stage = int.parse(_data.passo);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    Widget stepToRender;
+    switch (stage) {
+      case 1:
+        stepToRender = ParkingStepOne(
+          communicationController: controller,
+        );
+        break;
+      case 2:
+        stepToRender = ParkingStepTwo(
+          communicationController: controller,
+        );
+        break;
+      case 3:
+        stepToRender = ParkingStepThree(
+          communicationController: controller,
+        );
+        break;
+      case 4:
+        stepToRender = ParkingStepFour(
+          communicationController: controller,
+        );
+        break;
+      default:
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(App4Car.appName),
@@ -158,17 +90,17 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ),
         ],
       ),
-      body: LayoutBuilder(
-        builder: _builder,
-      ),
+      body: _data == null ? Center(child: CircularProgressIndicator()) : stepToRender,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            isMovingForward
-                ? carSpeed = carSpeed.abs()
-                : carSpeed = -carSpeed.abs();
-            sliderPercent += carSpeed;
+            if (stage < 4) {
+              stage++;
+            } else {
+              stage = 1;
+            }
           });
+          // _controller.repeat();
         },
         child: Icon(
           App4Car.driveIcon,
@@ -199,9 +131,7 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(
-              text: fit ? 'cabe' : 'não cabe',
-              style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),

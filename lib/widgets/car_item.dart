@@ -1,5 +1,6 @@
 import 'package:app4car/colors.dart';
 import 'package:app4car/utils/app4car.dart';
+import 'package:app4car/utils/app4car_navigator.dart';
 import 'package:flutter/material.dart';
 
 class CarItem extends StatelessWidget {
@@ -28,7 +29,9 @@ class CarItem extends StatelessWidget {
             App4Car.driveIcon,
             color: kApp4CarOrange,
           ),
-          onPressed: () {},
+          onPressed: () {
+            App4CarNavigator.goToParking(context);
+          },
         ),
       ),
     );

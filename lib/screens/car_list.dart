@@ -2,19 +2,10 @@ import 'package:app4car/widgets/car_item.dart';
 import 'package:flutter/material.dart';
 
 class CarListTab extends StatelessWidget {
-
-    Widget _buildCarList() {
+  Widget _buildCarList() {
     return Expanded(
       child: ListView(
         children: <Widget>[
-          CarItem(),
-          CarItem(),
-          CarItem(),
-          CarItem(),
-          CarItem(),
-          CarItem(),
-          CarItem(),
-          CarItem(),
           CarItem(),
           CarItem(),
         ],

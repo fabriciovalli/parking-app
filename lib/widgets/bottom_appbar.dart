@@ -26,7 +26,7 @@ class CustomBottomAppBar extends StatelessWidget {
               size: this.iconSize,
             ),
             onPressed: () {
-              App4CarNavigator.goToParkingSlider(context);
+              App4CarNavigator.goToParkingStepTwo(context);
             },
           ),
           Expanded(child: const SizedBox()),
@@ -35,7 +35,9 @@ class CustomBottomAppBar extends StatelessWidget {
               App4Car.diagnosticIcon,
               size: this.iconSize,
             ),
-            onPressed: () {},
+            onPressed: () {
+              App4CarNavigator.goToParkingStepThree(context);
+            },
           ),
           new SizedBox(
             width: 20.0,
@@ -45,7 +47,9 @@ class CustomBottomAppBar extends StatelessWidget {
               App4Car.thiefIcon,
               size: this.iconSize,
             ),
-            onPressed: () {},
+            onPressed: () {
+              App4CarNavigator.goToParkingStepFour(context);
+            },
           ),
         ],
       ),
@@ -55,7 +59,6 @@ class CustomBottomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new BottomAppBar(
-      hasNotch: false,
       color: Colors.white,
       child: Container(
         height: 70.0,
