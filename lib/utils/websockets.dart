@@ -9,10 +9,12 @@ WebSocketsNotifications sockets = new WebSocketsNotifications();
 ///
 /// Put your WebSockets server IP address and port number
 ///
-const String _SERVER_ADDRESS = "ws://192.168.0.21:34263";
+// const String _SERVER_ADDRESS = "ws://192.168.0.21:34263";
+const String _SERVER_ADDRESS = "ws://192.168.25.86:34263";
 
 class WebSocketsNotifications {
-  static final WebSocketsNotifications _sockets = new WebSocketsNotifications._internal();
+  static final WebSocketsNotifications _sockets =
+      new WebSocketsNotifications._internal();
 
   factory WebSocketsNotifications() {
     return _sockets;
@@ -56,7 +58,8 @@ class WebSocketsNotifications {
       ///
       /// Start listening to new notifications / messages
       ///
-      _channel.stream.listen(_onReceptionOfMessageFromServer, onError: (error, StackTrace stackTrace) {
+      _channel.stream.listen(_onReceptionOfMessageFromServer,
+          onError: (error, StackTrace stackTrace) {
         // error handling
       }, onDone: () {
         // communication has been closed

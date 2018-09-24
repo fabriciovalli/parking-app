@@ -41,7 +41,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
     ControllerData data = controllerDataFromJson(message);
     setState(() {
       _data = data;
-      // stage = int.parse(_data.passo);
+      stage = int.parse(_data.passo);
     });
   }
 
@@ -55,10 +55,14 @@ class _ParkingStepsState extends State<ParkingSteps> {
         );
         break;
       case 2:
-        stepToRender = ParkingStepTwo();
+        stepToRender = ParkingStepTwo(
+          communicationController: controller,
+        );
         break;
       case 3:
-        stepToRender = ParkingStepThree();
+        stepToRender = ParkingStepThree(
+          communicationController: controller,
+        );
         break;
       case 4:
         stepToRender = ParkingStepFour();
@@ -78,7 +82,9 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ),
         ],
       ),
-      body: _data == null ? Center(child: CircularProgressIndicator()) : stepToRender,
+      body: _data == null
+          ? Center(child: CircularProgressIndicator())
+          : stepToRender,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -119,7 +125,9 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(
+              text: fit ? 'cabe' : 'não cabe',
+              style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),
