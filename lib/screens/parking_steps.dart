@@ -65,7 +65,9 @@ class _ParkingStepsState extends State<ParkingSteps> {
         );
         break;
       case 4:
-        stepToRender = ParkingStepFour();
+        stepToRender = ParkingStepFour(
+          communicationController: controller,
+        );
         break;
       default:
     }

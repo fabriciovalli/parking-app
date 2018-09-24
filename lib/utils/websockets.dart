@@ -10,7 +10,8 @@ WebSocketsNotifications sockets = new WebSocketsNotifications();
 /// Put your WebSockets server IP address and port number
 ///
 // const String _SERVER_ADDRESS = "ws://192.168.0.21:34263";
-const String _SERVER_ADDRESS = "ws://192.168.25.86:34263";
+// const String _SERVER_ADDRESS = "ws://127.0.0.1:34263";
+const String _SERVER_ADDRESS = "ws://192.168.4.15:81";
 
 class WebSocketsNotifications {
   static final WebSocketsNotifications _sockets =
@@ -113,6 +114,7 @@ class WebSocketsNotifications {
   /// a message from the server
   /// ----------------------------------------------------------
   _onReceptionOfMessageFromServer(message) {
+    print(message);
     _listeners.forEach((Function callback) {
       callback(message);
     });

@@ -58,7 +58,6 @@ class _ParkingStepThreeState extends State<ParkingStepThree>
     ControllerData data = controllerDataFromJson(message);
     setState(() {
       // _data = data;
-      print(data.progresso);
       sliderPercent = double.parse(data.progresso) / 100;
       // stage = int.parse(_data.passo);
     });
