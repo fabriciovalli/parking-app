@@ -1,30 +1,24 @@
 import 'package:app4car/colors.dart';
 import 'package:app4car/models/controller_data.dart';
 import 'package:app4car/screens/parking/parking_car.dart';
-import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/utils/car_communication.dart';
 import 'package:app4car/widgets/arc_stepper.dart';
-import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:app4car/widgets/percent_indicator.dart';
-import 'package:app4car/widgets/slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/services.dart';
 
 class ParkingStepTwo extends StatefulWidget {
   final CarCommunication communicationController;
 
-  const ParkingStepTwo({Key key, this.communicationController})
-      : super(key: key);
+  const ParkingStepTwo({Key key, this.communicationController}) : super(key: key);
 
   @override
   _ParkingStepTwoState createState() => new _ParkingStepTwoState();
 }
 
-class _ParkingStepTwoState extends State<ParkingStepTwo>
-    with TickerProviderStateMixin {
+class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStateMixin {
   final flexTopCar = 3;
   final flexSpot = 3;
   final flexBottomCar = 1;
@@ -49,8 +43,7 @@ class _ParkingStepTwoState extends State<ParkingStepTwo>
     sliderPercent = 0.35;
     stage = 1;
 
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 4));
+    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
     _controller.repeat();
     widget.communicationController.addListener(_onMessageReceived);
   }
@@ -68,22 +61,14 @@ class _ParkingStepTwoState extends State<ParkingStepTwo>
   Widget _builder(BuildContext context, BoxConstraints constraints) {
     final height = constraints.maxHeight;
     final width = constraints.maxWidth;
-    final sliderY = height * (1.0 - sliderPercent);
 
     final Size parkingCarSize = Size(width / 3.2, height * 0.4 - 20);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4 - 20);
 
-    double goalPosition = height *
-        (flexTopCar + flexSpot / 2) *
-        (1 / (flexTopCar + flexSpot + flexBottomCar));
-    double spotSize =
-        height * (flexSpot / (flexTopCar + flexSpot + flexBottomCar));
-    double sliderPosition = sliderY + parkingCarSize.height * 0.45;
+    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
 
     _top = Tween(
-      begin: MediaQuery.of(context).size.height -
-          height -
-          parkingCarSize.height * .62,
+      begin: MediaQuery.of(context).size.height - height - parkingCarSize.height * .62,
       end: goalPosition - parkingCarSize.height * .62,
     ).animate(CurvedAnimation(
       parent: _controller,
@@ -178,9 +163,7 @@ class _ParkingStepTwoState extends State<ParkingStepTwo>
                   child: new Container(
                     height: parkingSpotSize.height * .5,
                     width: parkingSpotSize.width,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: kApp4CarGreen, width: 2.0),
-                        borderRadius: BorderRadius.circular(10.0)),
+                    decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),

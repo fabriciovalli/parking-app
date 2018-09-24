@@ -9,6 +9,7 @@ import 'package:app4car/utils/app4car.dart';
 import 'package:app4car/widgets/bottom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:app4car/utils/car_communication.dart';
+import 'package:flutter/services.dart';
 
 class ParkingSteps extends StatefulWidget {
   final CarData carData;
@@ -27,7 +28,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
   void initState() {
     super.initState();
     controller.addListener(_onMessageReceived);
-    controller.send(new CarData());
+    controller.send(widget.carData);
     stage = 1;
   }
 
@@ -47,6 +48,11 @@ class _ParkingStepsState extends State<ParkingSteps> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     Widget stepToRender;
     switch (stage) {
       case 1:
@@ -84,9 +90,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ),
         ],
       ),
-      body: _data == null
-          ? Center(child: CircularProgressIndicator())
-          : stepToRender,
+      body: _data == null ? Center(child: CircularProgressIndicator()) : stepToRender,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -127,9 +131,7 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(
-              text: fit ? 'cabe' : 'não cabe',
-              style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),
