@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app4car/colors.dart';
 import 'package:app4car/models/controller_data.dart';
 import 'package:app4car/screens/parking/parking_car.dart';
@@ -43,9 +45,21 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
     sliderPercent = 0.35;
     stage = 3;
 
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
-    _controller.repeat();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    )..addStatusListener(_animationHandler);
+    _controller.forward();
     widget.communicationController.addListener(_onMessageReceived);
+  }
+
+  void _animationHandler(status) async {
+    if (status == AnimationStatus.completed) {
+      print("animation stage 3 completed");
+      await Future.delayed(Duration(milliseconds: 1500));
+      _controller.reset();
+      _controller.forward();
+    }
   }
 
   _onMessageReceived(message) {
@@ -79,7 +93,7 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
       curve: Curves.linear,
     ));
 
-    _left = Tween(begin: width - 1.65 * parkingSpotSize.width, end: width - parkingCarSize.width - 8).animate(CurvedAnimation(
+    _left = Tween(begin: width - 2 * parkingSpotSize.width, end: width - 1.35 * parkingCarSize.width - 8).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.linear,
     ));
@@ -99,17 +113,16 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
               linearStrokeCap: LinearStrokeCap.butt,
               progressColor: kApp4CarGreen,
             ),
-            // child: SliderMarks(
-            //   markCount: 80,
-            //   color: Color(0x55FFFFFF),
-            //   paddingTop: paddingTop,
-            //   paddingBottom: paddingBottom,
-            //   position: sliderPosition,
-            //   goalMarkPosition: goalPosition, // 2.5,
-            //   spotSize: spotSize, //0.4,
-            // ),
           )
         ],
+      ),
+      Positioned(
+        top: height * .1,
+        left: width / 3.2,
+        child: Opacity(
+          opacity: 1.0, //_opacityAnimation.value,
+          child: buildInfoText(),
+        ),
       ),
       AnimatedBuilder(
         animation: _controller,
@@ -117,6 +130,7 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
           top: 0.0,
           left: _left.value,
           width: parkingCarSize.width,
+          isForward: false,
         ),
         builder: (BuildContext context, Widget child) {
           return Positioned(
@@ -184,6 +198,22 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
     return Stack(
       alignment: Alignment.center,
       children: stack,
+    );
+  }
+
+  Widget buildInfoText() {
+    return Container(
+      width: 130.0,
+      child: RichText(
+        textAlign: TextAlign.right,
+        text: new TextSpan(
+          text: 'Vire todo\n o volante\n para a\n esquerda\n e dê ré',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.0,
+          ),
+        ),
+      ),
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app4car/colors.dart';
 import 'package:app4car/models/controller_data.dart';
 import 'package:app4car/screens/parking/parking_car.dart';
@@ -41,18 +43,29 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
     super.initState();
 
     sliderPercent = 0.35;
-    stage = 1;
+    stage = 2;
 
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4));
-    _controller.repeat();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    )..addStatusListener(_animationHandler);
+
     widget.communicationController.addListener(_onMessageReceived);
+  }
+
+  void _animationHandler(status) async {
+    if (status == AnimationStatus.completed) {
+      print("animation stage 2 completed");
+      await Future.delayed(Duration(milliseconds: 1500));
+      _controller.reset();
+      _controller.forward();
+    }
   }
 
   _onMessageReceived(message) {
     ControllerData data = controllerDataFromJson(message);
     setState(() {
       // _data = data;
-      print(data.progresso);
       sliderPercent = double.parse(data.progresso) / 100;
       // stage = int.parse(_data.passo);
     });
@@ -103,17 +116,16 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
               linearStrokeCap: LinearStrokeCap.butt,
               progressColor: kApp4CarGreen,
             ),
-            // child: SliderMarks(
-            //   markCount: 80,
-            //   color: Color(0x55FFFFFF),
-            //   paddingTop: paddingTop,
-            //   paddingBottom: paddingBottom,
-            //   position: sliderPosition,
-            //   goalMarkPosition: goalPosition, // 2.5,
-            //   spotSize: spotSize, //0.4,
-            // ),
           )
         ],
+      ),
+      Positioned(
+        top: height * .65,
+        left: width / 5,
+        child: Opacity(
+          opacity: 1.0, //_opacityAnimation.value,
+          child: buildInfoText(),
+        ),
       ),
       AnimatedBuilder(
         animation: _controller,
@@ -189,6 +201,22 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
     return Stack(
       alignment: Alignment.center,
       children: stack,
+    );
+  }
+
+  Widget buildInfoText() {
+    return Container(
+      width: 130.0,
+      child: RichText(
+        textAlign: TextAlign.left,
+        text: new TextSpan(
+          text: 'Vire todo \no volante \npara a \ndireita e \ndê ré',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.0,
+          ),
+        ),
+      ),
     );
   }
 

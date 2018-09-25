@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app4car/colors.dart';
 import 'package:app4car/models/controller_data.dart';
 import 'package:app4car/screens/parking/parking_car.dart';
@@ -40,9 +42,21 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
     sliderPercent = 0.35;
     stage = 4;
 
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 2));
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 4),
+    )..addStatusListener(_animationHandler);
     _controller.forward();
     widget.communicationController.addListener(_onMessageReceived);
+  }
+
+  void _animationHandler(status) async {
+    if (status == AnimationStatus.completed) {
+      print("animation stage 4 completed");
+      await Future.delayed(Duration(milliseconds: 1500));
+      _controller.reset();
+      _controller.forward();
+    }
   }
 
   _onMessageReceived(message) {
@@ -88,6 +102,14 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
             ),
           )
         ],
+      ),
+      Positioned(
+        top: height * .15,
+        left: width / 3.2,
+        child: Opacity(
+          opacity: 1.0, //_opacityAnimation.value,
+          child: buildInfoText(),
+        ),
       ),
       AnimatedBuilder(
         animation: _controller,
@@ -154,6 +176,22 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
     return Stack(
       alignment: Alignment.center,
       children: stack,
+    );
+  }
+
+  Widget buildInfoText() {
+    return Container(
+      width: 130.0,
+      child: RichText(
+        textAlign: TextAlign.right,
+        text: new TextSpan(
+          text: 'Centralize\n o carro na\n vaga',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.0,
+          ),
+        ),
+      ),
     );
   }
 
