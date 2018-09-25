@@ -14,13 +14,15 @@ import 'package:flutter/services.dart';
 class ParkingStepThree extends StatefulWidget {
   final CarCommunication communicationController;
 
-  const ParkingStepThree({Key key, this.communicationController}) : super(key: key);
+  const ParkingStepThree({Key key, this.communicationController})
+      : super(key: key);
 
   @override
   _ParkingStepThreeState createState() => new _ParkingStepThreeState();
 }
 
-class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProviderStateMixin {
+class _ParkingStepThreeState extends State<ParkingStepThree>
+    with TickerProviderStateMixin {
   final flexTopCar = 3;
   final flexSpot = 3;
   final flexBottomCar = 1;
@@ -55,10 +57,14 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
 
   void _animationHandler(status) async {
     if (status == AnimationStatus.completed) {
-      print("animation stage 3 completed");
-      await Future.delayed(Duration(milliseconds: 1500));
-      _controller.reset();
-      _controller.forward();
+      if (sliderPercent == 1.0) {
+        print("step 3 completed - going to the next step");
+        _controller.stop();
+        widget.communicationController.nextStep(stage);
+      } else {
+        _controller.reset();
+        _controller.forward();
+      }
     }
   }
 
@@ -78,24 +84,29 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
     final Size parkingCarSize = Size(width / 3.2, height * 0.4 - 20);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4 - 20);
 
-    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
+    double goalPosition = height *
+        (flexTopCar + flexSpot / 2) *
+        (1 / (flexTopCar + flexSpot + flexBottomCar));
 
     _top = Tween(
       begin: goalPosition - parkingCarSize.height * .62,
       end: goalPosition - parkingCarSize.height * .4,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: Interval(0.2, .65, curve: Curves.linear),
     ));
 
     _rotate = Tween(begin: 32.0, end: .0).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: Interval(0.2, .65, curve: Curves.linear),
     ));
 
-    _left = Tween(begin: width - 2 * parkingSpotSize.width, end: width - 1.35 * parkingCarSize.width - 8).animate(CurvedAnimation(
+    _left = Tween(
+            begin: width - 2 * parkingSpotSize.width,
+            end: width - 1.35 * parkingCarSize.width - 8)
+        .animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: Interval(0.2, .65, curve: Curves.linear),
     ));
 
     List<Widget> stack = <Widget>[
@@ -172,7 +183,9 @@ class _ParkingStepThreeState extends State<ParkingStepThree> with TickerProvider
                   child: new Container(
                     height: parkingSpotSize.height * .5,
                     width: parkingSpotSize.width,
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey[400], width: 2.0), borderRadius: BorderRadius.circular(10.0)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[400], width: 2.0),
+                        borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),

@@ -14,13 +14,15 @@ import 'package:flutter/services.dart';
 class ParkingStepTwo extends StatefulWidget {
   final CarCommunication communicationController;
 
-  const ParkingStepTwo({Key key, this.communicationController}) : super(key: key);
+  const ParkingStepTwo({Key key, this.communicationController})
+      : super(key: key);
 
   @override
   _ParkingStepTwoState createState() => new _ParkingStepTwoState();
 }
 
-class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStateMixin {
+class _ParkingStepTwoState extends State<ParkingStepTwo>
+    with TickerProviderStateMixin {
   final flexTopCar = 3;
   final flexSpot = 3;
   final flexBottomCar = 1;
@@ -47,18 +49,22 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
 
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(seconds: 4),
+      duration: Duration(seconds: 5),
     )..addStatusListener(_animationHandler);
-
+    _controller.forward();
     widget.communicationController.addListener(_onMessageReceived);
   }
 
   void _animationHandler(status) async {
     if (status == AnimationStatus.completed) {
-      print("animation stage 2 completed");
-      await Future.delayed(Duration(milliseconds: 1500));
-      _controller.reset();
-      _controller.forward();
+      if (sliderPercent == 1.0) {
+        print("step 2 completed - going to the next step");
+        _controller.stop();
+        widget.communicationController.nextStep(stage);
+      } else {
+        _controller.reset();
+        _controller.forward();
+      }
     }
   }
 
@@ -78,19 +84,23 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
     final Size parkingCarSize = Size(width / 3.2, height * 0.4 - 20);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4 - 20);
 
-    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
+    double goalPosition = height *
+        (flexTopCar + flexSpot / 2) *
+        (1 / (flexTopCar + flexSpot + flexBottomCar));
 
     _top = Tween(
-      begin: MediaQuery.of(context).size.height - height - parkingCarSize.height * .62,
+      begin: MediaQuery.of(context).size.height -
+          height -
+          parkingCarSize.height * .62,
       end: goalPosition - parkingCarSize.height * .62,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.linear,
+      curve: Interval(0.2, .65, curve: Curves.linear),
     ));
 
     _rotate = Tween(begin: .0, end: 32.0).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn, //Interval(0.1, 1.0),
+      curve: Interval(0.2, .65, curve: Curves.easeIn),
     ));
 
     _left = Tween(
@@ -98,7 +108,7 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
       end: width - 2 * parkingCarSize.width,
     ).animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: Interval(0.2, .65, curve: Curves.easeIn),
     ));
 
     List<Widget> stack = <Widget>[
@@ -175,7 +185,9 @@ class _ParkingStepTwoState extends State<ParkingStepTwo> with TickerProviderStat
                   child: new Container(
                     height: parkingSpotSize.height * .5,
                     width: parkingSpotSize.width,
-                    decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: kApp4CarGreen, width: 2.0),
+                        borderRadius: BorderRadius.circular(10.0)),
                   ),
                 ),
               ),

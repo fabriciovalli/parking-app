@@ -9,12 +9,14 @@ WebSocketsNotifications sockets = new WebSocketsNotifications();
 ///
 /// Put your WebSockets server IP address and port number
 ///
-const String _SERVER_ADDRESS = "ws://192.168.0.21:34263";
+// const String _SERVER_ADDRESS = "ws://192.168.0.21:34263";
 // const String _SERVER_ADDRESS = "ws://127.0.0.1:34263";
-// const String _SERVER_ADDRESS = "ws://192.168.4.15:81";
+const String _SERVER_ADDRESS = "ws://192.168.4.15:81";
+// const String _SERVER_ADDRESS = "ws://192.168.0.20:34263";
 
 class WebSocketsNotifications {
-  static final WebSocketsNotifications _sockets = new WebSocketsNotifications._internal();
+  static final WebSocketsNotifications _sockets =
+      new WebSocketsNotifications._internal();
 
   factory WebSocketsNotifications() {
     return _sockets;
@@ -58,13 +60,19 @@ class WebSocketsNotifications {
       ///
       /// Start listening to new notifications / messages
       ///
-      _channel.stream.listen(_onReceptionOfMessageFromServer, onError: (error, StackTrace stackTrace) {
+      _channel.stream.listen(_onReceptionOfMessageFromServer,
+          onError: (error, StackTrace stackTrace) {
+        print(error);
+
         // error handling
       }, onDone: () {
+        print("connection closed");
         // communication has been closed
         _isOn = false;
       });
     } catch (e) {
+      print(e);
+
       ///
       /// General error handling
       /// TODO
@@ -76,6 +84,7 @@ class WebSocketsNotifications {
   /// Closes the WebSocket communication
   /// ----------------------------------------------------------
   reset() {
+    print("reseting connection");
     if (_channel != null) {
       if (_channel.sink != null) {
         _channel.sink.close();
@@ -89,7 +98,9 @@ class WebSocketsNotifications {
   /// ---------------------------------------------------------
   send(String message) {
     if (_channel != null) {
+      print(_isOn);
       if (_channel.sink != null && _isOn) {
+        print("sending message");
         _channel.sink.add(message);
       }
     }

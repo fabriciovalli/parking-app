@@ -11,13 +11,15 @@ import 'package:flutter/material.dart';
 class ParkingStepOne extends StatefulWidget {
   final CarCommunication communicationController;
 
-  const ParkingStepOne({Key key, this.communicationController}) : super(key: key);
+  const ParkingStepOne({Key key, this.communicationController})
+      : super(key: key);
 
   @override
   _ParkingStepOneState createState() => new _ParkingStepOneState();
 }
 
-class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStateMixin {
+class _ParkingStepOneState extends State<ParkingStepOne>
+    with TickerProviderStateMixin {
   final flexTopCar = 1;
   final flexSpot = 3;
   final flexBottomCar = 2;
@@ -41,22 +43,19 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
   void initState() {
     super.initState();
 
-    sliderPercent = 0.35;
+    sliderPercent = 0.0;
     stage = 1;
     isMovingForward = true;
 
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 4))..addStatusListener(_animationHandler);
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: 5),
+    )..addStatusListener(_animationHandler);
 
     _opacityController = AnimationController(
       vsync: this,
       duration: Duration(seconds: 5),
     )..addStatusListener(_opacityHandler);
-    _opacityAnimation = Tween(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _opacityController,
-        curve: Interval(.5, 1.0, curve: Curves.easeOut),
-      ),
-    );
 
     widget.communicationController.addListener(_onMessageReceived);
   }
@@ -73,16 +72,22 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
 
   void _opacityHandler(status) {
     if (status == AnimationStatus.completed) {
+      print("opacity done - starting movement");
+      widget.communicationController.begin();
       _controller.forward();
     }
   }
 
-  void _animationHandler(status) async {
+  void _animationHandler(status) {
     if (status == AnimationStatus.completed) {
-      print("animation completed");
-      await Future.delayed(Duration(milliseconds: 1500));
-      _controller.reset();
-      _controller.forward();
+      if (sliderPercent == 1.0) {
+        print("step 1 completed - going to the next step");
+        widget.communicationController.nextStep(stage);
+        _controller.stop();
+      } else {
+        _controller.reset();
+        _controller.forward();
+      }
     }
   }
 
@@ -94,16 +99,28 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
     final Size parkingCarSize = Size(width / 3.2, height * 0.4);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4);
 
-    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
+    double goalPosition = height *
+        (flexTopCar + flexSpot / 2) *
+        (1 / (flexTopCar + flexSpot + flexBottomCar));
 
     double sliderPosition = sliderY + parkingCarSize.height * 0.45;
 
     isMovingForward = (sliderPosition + carSpeed >= goalPosition);
 
-    _animation = Tween(begin: height + parkingCarSize.height, end: goalPosition - parkingCarSize.height * .45).animate(CurvedAnimation(
+    _animation = Tween(
+            begin: height + parkingCarSize.height,
+            end: goalPosition - parkingCarSize.height * .45)
+        .animate(CurvedAnimation(
       parent: _controller,
-      curve: Curves.decelerate,
+      curve: Interval(0.2, .65, curve: Curves.decelerate),
     ));
+
+    _opacityAnimation = Tween(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _opacityController,
+        curve: Interval(.5, 1.0, curve: Curves.easeOut),
+      ),
+    );
 
     _opacityController.forward();
 
@@ -143,7 +160,8 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
         ),
         builder: (BuildContext context, Widget child) {
           return Transform(
-            transform: Matrix4.translationValues(width / 4.2, _animation.value - parkingCarSize.height, 0.0),
+            transform: Matrix4.translationValues(
+                width / 4.2, _animation.value - parkingCarSize.height, 0.0),
             child: child,
           );
         },
@@ -171,7 +189,9 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
               child: new Container(
                 // height: parkingSpotSize.height,
                 width: parkingSpotSize.width,
-                decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
+                decoration: BoxDecoration(
+                    border: Border.all(color: kApp4CarGreen, width: 2.0),
+                    borderRadius: BorderRadius.circular(10.0)),
               ),
             ),
             new SizedBox(
@@ -192,7 +212,9 @@ class _ParkingStepOneState extends State<ParkingStepOne> with TickerProviderStat
       AnimatedBuilder(
         animation: _controller,
         builder: (_, __) {
-          return _animation.value < parkingCarSize.height * 1.3 ? ArcStepper(stage) : Container();
+          return _animation.value < parkingCarSize.height * 1.3
+              ? ArcStepper(stage)
+              : Container();
         },
       ),
       Positioned(
@@ -283,7 +305,9 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(
+              text: fit ? 'cabe' : 'não cabe',
+              style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),

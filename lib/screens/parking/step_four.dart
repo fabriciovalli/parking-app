@@ -13,13 +13,15 @@ import 'package:flutter/services.dart';
 class ParkingStepFour extends StatefulWidget {
   final CarCommunication communicationController;
 
-  const ParkingStepFour({Key key, this.communicationController}) : super(key: key);
+  const ParkingStepFour({Key key, this.communicationController})
+      : super(key: key);
 
   @override
   _ParkingStepFourState createState() => new _ParkingStepFourState();
 }
 
-class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderStateMixin {
+class _ParkingStepFourState extends State<ParkingStepFour>
+    with TickerProviderStateMixin {
   final flexTopCar = 3;
   final flexSpot = 3;
   final flexBottomCar = 1;
@@ -46,16 +48,19 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
       vsync: this,
       duration: Duration(seconds: 4),
     )..addStatusListener(_animationHandler);
-    _controller.forward();
+    _controller.repeat();
     widget.communicationController.addListener(_onMessageReceived);
   }
 
   void _animationHandler(status) async {
     if (status == AnimationStatus.completed) {
-      print("animation stage 4 completed");
-      await Future.delayed(Duration(milliseconds: 1500));
-      _controller.reset();
-      _controller.forward();
+      if (sliderPercent == 1.0) {
+        print("parking completed - going to the next step");
+        _controller.stop();
+      } else {
+        _controller.reset();
+        _controller.forward();
+      }
     }
   }
 
@@ -75,7 +80,9 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
     final Size parkingCarSize = Size(width / 3.2, height * 0.4 - 20);
     final Size parkingSpotSize = Size(width / 3.2, height * 0.4 - 20);
 
-    double goalPosition = height * (flexTopCar + flexSpot / 2) * (1 / (flexTopCar + flexSpot + flexBottomCar));
+    double goalPosition = height *
+        (flexTopCar + flexSpot / 2) *
+        (1 / (flexTopCar + flexSpot + flexBottomCar));
 
     _top = Tween(
       begin: goalPosition - parkingCarSize.height * .4,
@@ -151,7 +158,9 @@ class _ParkingStepFourState extends State<ParkingStepFour> with TickerProviderSt
                 child: Container(
                   height: parkingSpotSize.height * .5,
                   width: parkingSpotSize.width,
-                  decoration: BoxDecoration(border: Border.all(color: kApp4CarGreen, width: 2.0), borderRadius: BorderRadius.circular(10.0)),
+                  decoration: BoxDecoration(
+                      border: Border.all(color: kApp4CarGreen, width: 2.0),
+                      borderRadius: BorderRadius.circular(10.0)),
                 ),
               ),
               new SizedBox(

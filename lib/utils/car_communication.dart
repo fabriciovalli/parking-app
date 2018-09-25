@@ -5,8 +5,6 @@ import 'package:app4car/models/controller_data.dart';
 import 'package:flutter/foundation.dart';
 import 'websockets.dart';
 
-CarCommunication controller = new CarCommunication();
-
 class CarCommunication {
   // static final CarCommunication _controller = new CarCommunication._internal();
 
@@ -17,10 +15,10 @@ class CarCommunication {
     sockets.addListener(_onMessageReceived);
   }
 
-  CarCommunication._internal() {
-    sockets.initCommunication();
-    sockets.addListener(_onMessageReceived);
-  }
+  // CarCommunication._internal() {
+  //   sockets.initCommunication();
+  //   sockets.addListener(_onMessageReceived);
+  // }
 
   ControllerData get controllerData => _data;
 
@@ -31,8 +29,24 @@ class CarCommunication {
   }
 
   send(CarData carData) {
+    print("will send car size");
     sockets.send(json.encode({
-      "data": "connection",
+      "tamanho": "350",
+    }));
+  }
+
+  begin() {
+    print("will send begin");
+    sockets.send(json.encode({
+      "command": "begin",
+    }));
+  }
+
+  nextStep(int stage) {
+    print("will send nextStep");
+    sockets.send(json.encode({
+      "passo": stage.toString(),
+      "command": "next",
     }));
   }
 
