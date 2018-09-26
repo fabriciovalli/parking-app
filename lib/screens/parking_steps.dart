@@ -49,7 +49,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
   @override
   Widget build(BuildContext context) {
     _data = new ControllerData();
-    // stage = 1;
+    stage = 4;
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -92,9 +92,7 @@ class _ParkingStepsState extends State<ParkingSteps> {
           ),
         ],
       ),
-      body: _data == null
-          ? Center(child: CircularProgressIndicator())
-          : stepToRender,
+      body: _data == null ? Center(child: CircularProgressIndicator()) : stepToRender,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -135,9 +133,7 @@ class ResultadoVaga extends StatelessWidget {
           fontSize: 20.0,
         ),
         children: <TextSpan>[
-          new TextSpan(
-              text: fit ? 'cabe' : 'não cabe',
-              style: new TextStyle(fontWeight: FontWeight.bold)),
+          new TextSpan(text: fit ? 'cabe' : 'não cabe', style: new TextStyle(fontWeight: FontWeight.bold)),
           new TextSpan(text: ' na vaga!'),
         ],
       ),
